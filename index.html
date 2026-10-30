@@ -998,3 +998,19 @@ function update(){pending=false;try{
  const plot=p=>Array.from({length:10},(_,i)=>{const n=i+1;return (i?'L':'M')+(28+(n-1)*234/9).toFixed(2)+' '+(101-92*chance(p,n)).toFixed(2)}).join(' ');
  $('fc29-line-needed').setAttribute('d',plot(needed));$('fc29-line-secondary').setAttribute('d',plot(secondary));$('fc29-line-either').setAttribute('d',plot(either));
  checkpoint.replaceChildren(...[1,5,10].map(n=>{const b=document.createElement('button');b.type='button';b.className=selectedAttempts===n?'active':'';b.textContent=n+' rolls';const s=document.createElement('small');s.textContent=num(chance(either,n))+' either';b.append(s);b.addEventListener('click',()=>{selectedAttempts=n;renderSelection();});return b;}));
+ renderSelection();
+ }catch(e){console.warn('Live multi-curve:',e)}}
+function renderSelection(){if(!computed)return;const n=selectedAttempts,{needed,secondary,either}=computed;
+ for(const b of checkpoint.querySelectorAll('button'))b.classList.toggle('active',b.textContent.startsWith(n+' rolls'));
+ const slotcost=typeof S!=='undefined'?S.slots.filter(Boolean).length:0;
+ const cost=slotcost*n;
+ $('fc29-selected').innerHTML='<b>'+n+' attempts</b> · <span class="fc29-n">Needed '+num(chance(needed,n))+'</span> · <span class="fc29-s">Secondary '+num(chance(secondary,n))+'</span> · <span class="fc29-e">Either '+num(chance(either,n))+'</span><br>Approx. '+cost+' orbs at the current slot cost (if paid rerolls).';
+ $('fc29-crosshair').setAttribute('x1',28+(n-1)*234/9);$('fc29-crosshair').setAttribute('x2',28+(n-1)*234/9);$('fc29-crosshair').setAttribute('opacity','.4');
+}
+select.addEventListener('change',()=>{secondaryChoice=select.value;update()});
+graph.addEventListener('pointermove',e=>{const r=graph.getBoundingClientRect();let n=Math.min(10,Math.max(1,Math.round((e.clientX-r.left)/r.width*10)));if(n!==selectedAttempts){selectedAttempts=n;renderSelection()}});
+function queue(){if(!pending){pending=true;queueMicrotask(update)}}
+for(const id of ['odds','goals','slots','difficulty']){const t=$(id);if(t)new MutationObserver(queue).observe(t,{childList:true,subtree:true,characterData:true})}
+for(const id of ['fc27-bars','fc26-mini-difficulty']){const t=$(id);if(t)new MutationObserver(queue).observe(t,{childList:true,subtree:true})}
+document.addEventListener('click',e=>{if(e.target.closest('[data-i],[data-f],.navbtn'))setTimeout(queue,0)});queue();
+})();</script></body></html>

@@ -1,0 +1,69 @@
+{
+  "profile": "chromium headless, page.set_content (not HTTP navigation), external requests blocked, 1440x900 desktop; not production RUM",
+  "measurements": {
+    "fairycodex_v36_1": {
+      "size_bytes": 376675,
+      "sha256": "914cd44bede75e31c2a99a41c23926b603c29868f36f74ded66fecdd2683f23f",
+      "runs": [
+        {
+          "set_content_domcontentloaded_ms": 491.27,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 186.18,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 217.46,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 215.13,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 201.19,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        }
+      ],
+      "median_set_content_ms": 215.13
+    },
+    "central_market_uploaded": {
+      "size_bytes": 204006,
+      "sha256": "67b104feeb95b9d69b71ec07b7473a78f8a886aebe4c43de345787c045b2d4d8",
+      "runs": [
+        {
+          "set_content_domcontentloaded_ms": 217.78,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 126.59,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 111.96,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 102.92,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        },
+        {
+          "set_content_domcontentloaded_ms": 134.31,
+          "js_heap_used_mb": 9.54,
+          "page_errors": []
+        }
+      ],
+      "median_set_content_ms": 126.59
+    }
+  }
+}

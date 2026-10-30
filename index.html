@@ -518,7 +518,7 @@ let currentTrials=null, lastData=null;
 const getParts=t=>CATALOG.find(x=>x.id===t)?.parts||[];
 const record=(tid,id)=>T.piece[tid+':'+id]||{done:false,count:0,p:0,kph:2500,notes:''};
 const done=(tid,id)=>record(tid,id).done;
-const allPieces=()=>CATALOG.flatMap(t=>t.parts.map(p=>({t,p})));const percentTreasure=t=>t.parts.filter(p=>done(t.id,p[0])).length/t.parts.length;
+const PIECE_CATALOG=CATALOG.flatMap(t=>t.parts.map(p=>({t,p})));const allPieces=()=>PIECE_CATALOG;const percentTreasure=t=>t.parts.filter(p=>done(t.id,p[0])).length/t.parts.length;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(T));$('tr-save').textContent='✓ Saved locally'}catch(e){$('tr-save').textContent='Storage unavailable — export data'}}
 const chart=(items,{w=720,h=230,color='#dc82ed',label='Chance'}={})=>{
  const pad={l:45,r:20,t:16,b:28},lx=pad.l,rx=w-pad.r,by=h-pad.b,ty=pad.t;
@@ -660,6 +660,22 @@ function render(){let root=$('treasure-atlas');if(!root)return;root.innerHTML=wi
 function rootContents(){return root();}
 // Scoped rendering is intentionally isolated from the original fairy calculator.
 function redraw(){const host=$('treasure-atlas');host.innerHTML=root();save();}
+// Fast-path for tab-only navigation: keep the static header, profile selector,
+// navigation and summaries mounted. Only replace the tab content.
+function navigateTreasure(tab){
+ if(T.tab===tab)return;
+ T.tab=tab;
+ const content=host.querySelector('#tr-content');
+ if(!content){redraw();return;}
+ content.innerHTML=page();
+ host.querySelectorAll('.tr-nav[data-tr-tab]').forEach(b=>{
+  const active=b.dataset.trTab===tab;
+  b.classList.toggle('active',active);
+  if(active)b.setAttribute('aria-current','page');
+  else b.removeAttribute('aria-current');
+ });
+ save();
+}
 function updatePiece(key,fn){let [tid,id]=key.split('|'),old=record(tid,id);T.piece[tid+':'+id]={...old,...fn(old)};redraw();}
 function download(name,text,type='text/plain'){let b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);}
 function csv(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');}
@@ -676,7 +692,7 @@ host.addEventListener('click',ev=>{let el=ev.target.closest('button');if(!el)ret
  if(el.hasAttribute('data-tr-profile-load')){let n=document.getElementById('tr-profile-select')?.value;if(!n||!profiles[n]){alert('Select a saved collection.');return}if(!confirm('Load '+n+'? This replaces the current unsaved collection.'))return;const p=profiles[n];T.piece=structuredClone(p.piece||{});T.sessions=structuredClone(p.sessions||[]);T.notes=structuredClone(p.notes||{});T.journal=structuredClone(p.journal||[]);activeProfile=n;redraw();return}
  if(el.hasAttribute('data-tr-profile-new')){if(!confirm('Start a blank collection? Save the current one first if you want to keep it.'))return;T.piece={};T.sessions=[];T.notes={};T.journal=[];activeProfile='';redraw();return}
  if(el.hasAttribute('data-tr-profile-delete')){let n=document.getElementById('tr-profile-select')?.value;if(!n||!profiles[n])return;if(!confirm('Permanently delete collection '+n+'?'))return;delete profiles[n];profilesSave();if(activeProfile===n)activeProfile='';redraw();return}
- if(el.dataset.trTab){T.tab=el.dataset.trTab;redraw();return}
+ if(el.dataset.trTab){navigateTreasure(el.dataset.trTab);return}
  if(el.dataset.trSelect){T.selected=el.dataset.trSelect;T.tab='collection';redraw();return}
  if(el.dataset.trFocus){let [tid,id]=el.dataset.trFocus.split('|');T.selected=tid;T.goal=tid+':'+id;T.tab='rates';redraw();return}
 

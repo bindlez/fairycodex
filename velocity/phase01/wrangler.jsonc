@@ -1,1 +1,13 @@
-{"name":"fairycodex-velocity-api","main":"src/worker.js","compatibility_date":"2026-10-30","workers_dev":true,"vars":{"ALLOWED_ORIGINS":"https://bindlez.github.io","UPSTREAM_BASE":"https://api.arsha.io","FRESH_TTL_SECONDS":"45","STALE_TTL_SECONDS":"300"}}
+{
+  "name": "fairycodex-velocity-api",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-30",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "vars": {
+    "ALLOWED_ORIGINS": "https://bindlez.github.io",
+    "UPSTREAM_BASE": "https://api.arsha.io",
+    "FRESH_TTL_SECONDS": "45",
+    "STALE_TTL_SECONDS": "300"
+  }
+}
